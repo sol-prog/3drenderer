@@ -5,13 +5,13 @@
 
 void draw(ColorBuffer *color_buffer) {
     ClearColorBuffer(color_buffer, 0xFF000000);
-    //draw_grid(color_buffer, 20, 0xFF0000FF);
-    //test_draw_rectangles(color_buffer);
+    // draw_grid(color_buffer, 20, 0xFF0000FF);
+    // test_draw_rectangles(color_buffer);
     test_draw_pixels(color_buffer);
 }
 
 void update(void) {
-    DisplayDelay(500);
+    DisplayDelay(100);
 }
 
 int main(void) {
@@ -36,7 +36,7 @@ int main(void) {
     while(is_running) {
         DisplayProcessInput(&is_running);
         update();
-        ClearDisplay(display, 255, 0, 0, 255);       
+        // ClearDisplay(display, 255, 0, 0, 255);
         draw(color_buffer);
         DisplayRenderBuffer(display, color_buffer->data);
         PresentDisplay(display);
