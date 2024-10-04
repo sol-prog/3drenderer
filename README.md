@@ -1,2 +1,4 @@
 # 3drenderer
-following Pikuma 3d renderer course
+
+Code written while following Pikuma 3D rendering course.
+
