@@ -2,16 +2,38 @@
 #include "Display.h"
 #include "ColorBuffer.h"
 #include "Drawing.h"
+#include "Vector.h"
+
+enum {N_POINTS = 9 * 9 * 9};
+const float FOV_FACT = 128;
+Vec3 cube_points[N_POINTS];
+Vec2 proj_points[N_POINTS];
+
+void setup(void) {
+    int curr_point = 0;
+    for(float x = -1; x <= 1; x+= 0.25) {
+        for(float y = -1; y <= 1; y+= 0.25) {
+            for(float z = -1; z <= 1; z+= 0.25) {
+                cube_points[curr_point] = (Vec3){x, y, z};
+                curr_point++; 
+            }
+        }
+    }
+}
+Vec2 project(Vec3 *pt3, float fov_factor) {
+    return (Vec2){fov_factor * pt3->x, fov_factor *pt3->y};
+}
+void update(void) {
+    for(int i = 0; i < N_POINTS; ++i) {
+        proj_points[i] = project(&cube_points[i], FOV_FACT);
+    }
+}
 
 void draw(ColorBuffer *color_buffer) {
     ClearColorBuffer(color_buffer, 0xFF000000);
-    // draw_grid(color_buffer, 20, 0xFF0000FF);
-    // test_draw_rectangles(color_buffer);
-    test_draw_pixels(color_buffer);
-}
-
-void update(void) {
-    DisplayDelay(100);
+    for(int i = 0; i < N_POINTS; ++i) {
+        draw_rect(color_buffer, proj_points[i].x + 0.5 * color_buffer->width, proj_points[i].y + 0.5 * color_buffer->height, 4, 4, 0xFFFFFF00);
+    }
 }
 
 int main(void) {
@@ -33,10 +55,11 @@ int main(void) {
         is_running = false;
     }
 
+    setup();
+
     while(is_running) {
         DisplayProcessInput(&is_running);
         update();
-        // ClearDisplay(display, 255, 0, 0, 255);
         draw(color_buffer);
         DisplayRenderBuffer(display, color_buffer->data);
         PresentDisplay(display);
