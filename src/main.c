@@ -9,6 +9,7 @@ const float FOV_FACT = 640;
 Vec3 cube_points[N_POINTS];
 Vec2 proj_points[N_POINTS];
 Vec3 camera_pos = {0, 0, -5};
+Vec3 cube_rotation = {0, 0, 0};
 
 void setup(void) {
     int curr_point = 0;
@@ -25,9 +26,22 @@ Vec2 project(Vec3 *pt3, float fov_factor) {
     return (Vec2){fov_factor * pt3->x/pt3->z, fov_factor *pt3->y/pt3->z};
 }
 void update(void) {
+    cube_rotation.x += 0.01;
+    cube_rotation.y += 0.01;
+    cube_rotation.z += 0.01;
+
     for(int i = 0; i < N_POINTS; ++i) {
         Vec3 point = cube_points[i];
+
+        // Rotation
+        point = vec3_rotate_x(point, cube_rotation.x);
+        point = vec3_rotate_y(point, cube_rotation.y);
+        point = vec3_rotate_z(point, cube_rotation.z);
+
+        // Camera
         point.z -= camera_pos.z;
+
+        // Projection
         proj_points[i] = project(&point, FOV_FACT);
     }
 }
