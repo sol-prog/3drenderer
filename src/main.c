@@ -27,15 +27,15 @@ void setup(void) {
         }
     }
 }
+
 Vec2 project(Vec3 *pt3, float fov_factor) {
     return (Vec2){fov_factor * pt3->x/pt3->z, fov_factor *pt3->y/pt3->z};
 }
+
 void update(void) {
-    uint64_t start = DisplayGetTicks();
-    while(DisplayGetTicks() < previous_frame_time + FRAME_TARGET_TIME) {
-    }
-    uint64_t end = DisplayGetTicks();
-    fprintf(stderr, "%zu\n", end - start);
+    // Fix FPS
+    while(DisplayGetTicks() < previous_frame_time + FRAME_TARGET_TIME) {}
+
     previous_frame_time = DisplayGetTicks();
 
     cube_rotation.x += 0.01;
