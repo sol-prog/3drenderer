@@ -34,7 +34,11 @@ Vec2 project(Vec3 *pt3, float fov_factor) {
 
 void update(void) {
     // Fix FPS
-    while(DisplayGetTicks() < previous_frame_time + FRAME_TARGET_TIME) {}
+    uint32_t time_to_wait = FRAME_TARGET_TIME - (DisplayGetTicks() - previous_frame_time);
+    fprintf(stderr, "%u\n", time_to_wait);
+    if(time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME) {
+        DisplayDelay(time_to_wait);
+    }
 
     previous_frame_time = DisplayGetTicks();
 
