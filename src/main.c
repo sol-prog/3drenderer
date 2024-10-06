@@ -4,12 +4,17 @@
 #include "Drawing.h"
 #include "Vector.h"
 
+const float FPS = 30;
+const float FRAME_TARGET_TIME = 1000.0f / FPS;
+uint64_t previous_frame_time = 0;
+
 enum {N_POINTS = 9 * 9 * 9};
 const float FOV_FACT = 640;
 Vec3 cube_points[N_POINTS];
 Vec2 proj_points[N_POINTS];
 Vec3 camera_pos = {0, 0, -5};
 Vec3 cube_rotation = {0, 0, 0};
+
 
 void setup(void) {
     int curr_point = 0;
@@ -26,6 +31,13 @@ Vec2 project(Vec3 *pt3, float fov_factor) {
     return (Vec2){fov_factor * pt3->x/pt3->z, fov_factor *pt3->y/pt3->z};
 }
 void update(void) {
+    uint64_t start = DisplayGetTicks();
+    while(DisplayGetTicks() < previous_frame_time + FRAME_TARGET_TIME) {
+    }
+    uint64_t end = DisplayGetTicks();
+    fprintf(stderr, "%zu\n", end - start);
+    previous_frame_time = DisplayGetTicks();
+
     cube_rotation.x += 0.01;
     cube_rotation.y += 0.01;
     cube_rotation.z += 0.01;
