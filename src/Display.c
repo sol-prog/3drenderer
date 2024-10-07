@@ -11,9 +11,11 @@ struct Display {
     SDL_Texture *buffer_texture;
     int width;
     int height;
+    int FPS;
+    uint64_t previous_frame_time;
 };
 
-Display* CreateDisplay(int width, int height, bool full_screen, bool create_streaming_texture) {
+Display* CreateDisplay(int width, int height, bool full_screen, bool create_streaming_texture, int FPS) {
     Display *display = malloc(sizeof(Display));
     if(!display) {
         fprintf(stderr, "Error allocating a Display struct!\n");
@@ -31,7 +33,7 @@ Display* CreateDisplay(int width, int height, bool full_screen, bool create_stre
     if(full_screen) {
         SDL_DisplayMode display_mode;
         SDL_GetCurrentDisplayMode(0, &display_mode);
-        printf("Display size: width = %d, height = %d\n", display_mode.w, display_mode.h);
+        // printf("Display size: width = %d, height = %d\n", display_mode.w, display_mode.h);
 
         display->width = display_mode.w;
         display->height = display_mode.h;
@@ -64,6 +66,10 @@ Display* CreateDisplay(int width, int height, bool full_screen, bool create_stre
             return NULL;
         }
     }
+
+    display->FPS = FPS;
+    display->previous_frame_time = SDL_GetTicks64();
+
     return display;
 }
 
@@ -78,6 +84,18 @@ void DisplayDelay(uint32_t ms) {
 
 uint64_t DisplayGetTicks(void) {
     return SDL_GetTicks64();
+}
+
+void DisplayDelayForFPS(Display *display) {
+    // Fix FPS
+    double frame_target_time = 1000.0 / display->FPS;
+    uint32_t time_to_wait = frame_target_time - (DisplayGetTicks() - display->previous_frame_time);
+    // fprintf(stderr, "%u\n", time_to_wait);
+    if(time_to_wait > 0 && time_to_wait <= frame_target_time) {
+        SDL_Delay(time_to_wait);
+    }
+
+    display->previous_frame_time = DisplayGetTicks();
 }
 
 void ClearDisplay(Display *display, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {

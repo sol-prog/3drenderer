@@ -4,10 +4,6 @@
 #include "Drawing.h"
 #include "Vector.h"
 
-const float FPS = 30;
-const float FRAME_TARGET_TIME = 1000.0f / FPS;
-uint64_t previous_frame_time = 0;
-
 enum {N_POINTS = 9 * 9 * 9};
 const float FOV_FACT = 640;
 Vec3 cube_points[N_POINTS];
@@ -32,15 +28,9 @@ Vec2 project(Vec3 *pt3, float fov_factor) {
     return (Vec2){fov_factor * pt3->x/pt3->z, fov_factor *pt3->y/pt3->z};
 }
 
-void update(void) {
-    // Fix FPS
-    uint32_t time_to_wait = FRAME_TARGET_TIME - (DisplayGetTicks() - previous_frame_time);
-    fprintf(stderr, "%u\n", time_to_wait);
-    if(time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME) {
-        DisplayDelay(time_to_wait);
-    }
-
-    previous_frame_time = DisplayGetTicks();
+void update(Display *display) {
+    // Fix the FPS
+    DisplayDelayForFPS(display);
 
     cube_rotation.x += 0.01;
     cube_rotation.y += 0.01;
@@ -74,7 +64,7 @@ int main(void) {
     int height = 600;
     bool is_running = true;
 
-    Display *display = CreateDisplay(800, 600, true, true);
+    Display *display = CreateDisplay(800, 600, true, true, 30);
     if(!display) {
         fprintf(stderr, "Error initalizing the display!\n");
         return 1;
@@ -92,7 +82,7 @@ int main(void) {
 
     while(is_running) {
         DisplayProcessInput(&is_running);
-        update();
+        update(display);
         draw(color_buffer);
         DisplayRenderBuffer(display, color_buffer->data);
         PresentDisplay(display);
