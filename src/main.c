@@ -62,9 +62,10 @@ void draw(ColorBuffer *color_buffer) {
 int main(void) {
     int width = 800;
     int height = 600;
+    int FPS = 30;
     bool is_running = true;
 
-    Display *display = CreateDisplay(800, 600, true, true, 30);
+    Display *display = CreateDisplay(width, height, true, true, FPS);
     if(!display) {
         fprintf(stderr, "Error initalizing the display!\n");
         return 1;
