@@ -58,16 +58,17 @@ void update(Display *display, ColorBuffer *color_buffer) {
 void draw(ColorBuffer *color_buffer) {
     ClearColorBuffer(color_buffer, 0xFF000000);
     for(int i = 0; i < N_MESH_FACES; ++i) {
-        for(int j = 0; j < 3; ++j) {
-            draw_rect(
-                color_buffer,
-                triangles_to_render[i].points[j].x,
-                triangles_to_render[i].points[j].y, 
-                4,
-                4,
-                0xFFFFFF00
-            );
-        }
+        draw_triangle(color_buffer, triangles_to_render[i], 0xFFFFFF00);
+        // for(int j = 0; j < 3; ++j) {
+        //     draw_rect(
+        //         color_buffer,
+        //         triangles_to_render[i].points[j].x,
+        //         triangles_to_render[i].points[j].y, 
+        //         4,
+        //         4,
+        //         0xFFFFFF00
+        //     );
+        // }
     }
 }
 

@@ -18,6 +18,6 @@ void draw_line(ColorBuffer *col_buff, int x0, int y0, int x1, int y1, uint32_t c
 void test_draw_rectangles(ColorBuffer *col_buff);
 // Draw random pixels with random colors
 void test_draw_pixels(ColorBuffer *col_buff);
-//
+// Draw line - DDA algorithm
 void test_draw_lines(ColorBuffer *col_buff);
 
