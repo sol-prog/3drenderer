@@ -23,52 +23,53 @@ void update(Display *display, ColorBuffer *color_buffer) {
     // Fix the FPS
     DisplayDelayForFPS(display);
 
-    cube_rotation.x += 0.01;
-    cube_rotation.y += 0.01;
-    cube_rotation.z += 0.01;
+    // cube_rotation.x += 0.01;
+    // cube_rotation.y += 0.01;
+    // cube_rotation.z += 0.01;
 
-    for(int i = 0; i < N_MESH_FACES; ++i) {
-        Face mesh_face = mesh_faces[i];
-        Vec3 face_vertices[3];
-        face_vertices[0] = mesh_vertices[mesh_face.a - 1];
-        face_vertices[1] = mesh_vertices[mesh_face.b - 1];
-        face_vertices[2] = mesh_vertices[mesh_face.c - 1];
+    // for(int i = 0; i < N_MESH_FACES; ++i) {
+    //     Face mesh_face = mesh_faces[i];
+    //     Vec3 face_vertices[3];
+    //     face_vertices[0] = mesh_vertices[mesh_face.a - 1];
+    //     face_vertices[1] = mesh_vertices[mesh_face.b - 1];
+    //     face_vertices[2] = mesh_vertices[mesh_face.c - 1];
 
-        for(int j = 0; j < 3; ++j) {
-            Vec3 transformed_vertex = face_vertices[j];
-            transformed_vertex = vec3_rotate_x(transformed_vertex, cube_rotation.x);
-            transformed_vertex = vec3_rotate_y(transformed_vertex, cube_rotation.y);
-            transformed_vertex = vec3_rotate_z(transformed_vertex, cube_rotation.z);
+    //     for(int j = 0; j < 3; ++j) {
+    //         Vec3 transformed_vertex = face_vertices[j];
+    //         transformed_vertex = vec3_rotate_x(transformed_vertex, cube_rotation.x);
+    //         transformed_vertex = vec3_rotate_y(transformed_vertex, cube_rotation.y);
+    //         transformed_vertex = vec3_rotate_z(transformed_vertex, cube_rotation.z);
 
-            // Translate the vertex away from the camera
-            transformed_vertex.z -= camera_pos.z;
+    //         // Translate the vertex away from the camera
+    //         transformed_vertex.z -= camera_pos.z;
 
-            // Projection
-            Vec2 projected_vertex = project(&transformed_vertex, FOV_FACT);
+    //         // Projection
+    //         Vec2 projected_vertex = project(&transformed_vertex, FOV_FACT);
 
-            // Scale, translate projected points to middle of screen
-            projected_vertex.x += + 0.5 * color_buffer->width;
-            projected_vertex.y += + 0.5 * color_buffer->height;
+    //         // Scale, translate projected points to middle of screen
+    //         projected_vertex.x += + 0.5 * color_buffer->width;
+    //         projected_vertex.y += + 0.5 * color_buffer->height;
 
-            triangles_to_render[i].points[j] = projected_vertex;
-        }
-    }
+    //         triangles_to_render[i].points[j] = projected_vertex;
+    //     }
+    // }
 }
 
 void draw(ColorBuffer *color_buffer) {
     ClearColorBuffer(color_buffer, 0xFF000000);
-    for(int i = 0; i < N_MESH_FACES; ++i) {
-        for(int j = 0; j < 3; ++j) {
-            draw_rect(
-                color_buffer,
-                triangles_to_render[i].points[j].x,
-                triangles_to_render[i].points[j].y, 
-                4,
-                4,
-                0xFFFFFF00
-            );
-        }
-    }
+    // for(int i = 0; i < N_MESH_FACES; ++i) {
+    //     for(int j = 0; j < 3; ++j) {
+    //         draw_rect(
+    //             color_buffer,
+    //             triangles_to_render[i].points[j].x,
+    //             triangles_to_render[i].points[j].y, 
+    //             4,
+    //             4,
+    //             0xFFFFFF00
+    //         );
+    //     }
+    // }
+    test_draw_lines(color_buffer);
 }
 
 int main(void) {
