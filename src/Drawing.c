@@ -1,5 +1,7 @@
 #include "Drawing.h"
 #include "Utils.h"
+#include <stdlib.h>
+#include <math.h>
 
 void draw_grid(ColorBuffer *col_buff, int div, uint32_t color) {
     // Draw horizontal lines
@@ -30,6 +32,23 @@ void draw_rect(ColorBuffer *col_buff, int xt, int yt, int width, int height, uin
                 col_buff->data[col_buff->width * y + x] = fill_color;
             }
         }
+    }
+}
+
+void draw_line(ColorBuffer *col_buff, int x0, int y0, int x1, int y1, uint32_t color) {
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+
+    int side_length = abs(dx) >= abs(dy) ? abs(dx) : abs(dy);
+    float x_inc = dx / (float) side_length;
+    float y_inc = dy / (float) side_length;
+    float curr_x = x0;
+    float curr_y = y0;
+
+    for(int i = 0; i <= side_length; ++i) {
+        draw_pixel(col_buff, roundf(curr_x), roundf(curr_y), color);
+        curr_x += x_inc;
+        curr_y += y_inc;
     }
 }
 
