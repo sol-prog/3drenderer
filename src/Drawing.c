@@ -54,6 +54,36 @@ void draw_line(ColorBuffer *col_buff, int x0, int y0, int x1, int y1, uint32_t c
 
 // TESTS
 
+void test_draw_lines(ColorBuffer *col_buff) {
+    draw_line(col_buff, 10, 10, 1900, 10, 0xFFFF0000);
+    draw_line(col_buff, 10, 1070, 1900, 1070, 0xFFFF0000);
+    draw_line(col_buff, 10, 10, 10, 1070, 0xFFFF0000);
+    draw_line(col_buff, 1900, 10, 1900, 1070, 0xFFFF0000);
+
+    draw_line(col_buff, 10, 10, 1900, 100, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 200, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 300, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 400, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 500, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 600, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 700, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 800, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 900, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 1000, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1900, 1070, 0xFFFFFF00);
+
+    draw_line(col_buff, 10, 10, 1700, 1070, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1500, 1070, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1300, 1070, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10, 1100, 1070, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10,  900, 1070, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10,  700, 1070, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10,  500, 1070, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10,  300, 1070, 0xFFFFFF00);
+    draw_line(col_buff, 10, 10,  100, 1070, 0xFFFFFF00);
+
+}
+
 void test_draw_pixels(ColorBuffer *col_buff) {
     int x, y;
     uint32_t color;
