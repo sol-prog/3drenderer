@@ -3,6 +3,7 @@
 #include "ColorBuffer.h"
 #include "Drawing.h"
 #include "Vector.h"
+#include "Face.h"
 #include "Mesh.h"
 
 Triangle triangles_to_render[N_MESH_FACES];
