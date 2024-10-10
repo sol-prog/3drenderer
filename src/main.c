@@ -5,12 +5,20 @@
 #include "Vector.h"
 #include "Face.h"
 #include "Mesh.h"
+#include "array.h"
+#include <math.h>
 
-Triangle triangles_to_render[N_MESH_FACES];
+// some compiler do not define M_PI (after C23 M_PI was standardized)
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
+ObjMesh obj_mesh;
+Triangle *triangles_to_render;
 
 const float FOV_FACT = 640;
 Vec3 camera_pos = {0, 0, -5};
-Vec3 cube_rotation = {0, 0, 0};
+Vec3 obj_mesh_rotation = {M_PI, 0, 0};
 
 
 void setup(void) {
@@ -24,22 +32,22 @@ void update(Display *display, ColorBuffer *color_buffer) {
     // Fix the FPS
     DisplayDelayForFPS(display);
 
-    cube_rotation.x += 0.01;
-    cube_rotation.y += 0.01;
-    cube_rotation.z += 0.01;
+    obj_mesh_rotation.x += 0.01;
+    obj_mesh_rotation.y += 0.01;
+    obj_mesh_rotation.z += 0.01;
 
-    for(int i = 0; i < N_MESH_FACES; ++i) {
-        Face mesh_face = mesh_faces[i];
+    for(size_t i = 0; i < obj_mesh.nr_faces; ++i) {
+        Face mesh_face = obj_mesh.faces[i];
         Vec3 face_vertices[3];
-        face_vertices[0] = mesh_vertices[mesh_face.a - 1];
-        face_vertices[1] = mesh_vertices[mesh_face.b - 1];
-        face_vertices[2] = mesh_vertices[mesh_face.c - 1];
+        face_vertices[0] = obj_mesh.vertices[mesh_face.a - 1];
+        face_vertices[1] = obj_mesh.vertices[mesh_face.b - 1];
+        face_vertices[2] = obj_mesh.vertices[mesh_face.c - 1];
 
         for(int j = 0; j < 3; ++j) {
             Vec3 transformed_vertex = face_vertices[j];
-            transformed_vertex = vec3_rotate_x(transformed_vertex, cube_rotation.x);
-            transformed_vertex = vec3_rotate_y(transformed_vertex, cube_rotation.y);
-            transformed_vertex = vec3_rotate_z(transformed_vertex, cube_rotation.z);
+            transformed_vertex = vec3_rotate_x(transformed_vertex, obj_mesh_rotation.x);
+            transformed_vertex = vec3_rotate_y(transformed_vertex, obj_mesh_rotation.y);
+            transformed_vertex = vec3_rotate_z(transformed_vertex, obj_mesh_rotation.z);
 
             // Translate the vertex away from the camera
             transformed_vertex.z -= camera_pos.z;
@@ -58,7 +66,7 @@ void update(Display *display, ColorBuffer *color_buffer) {
 
 void draw(ColorBuffer *color_buffer) {
     ClearColorBuffer(color_buffer, 0xFF000000);
-    for(int i = 0; i < N_MESH_FACES; ++i) {
+    for(size_t i = 0; i < obj_mesh.nr_faces; ++i) {
         // Draw face
         draw_triangle(color_buffer, triangles_to_render[i], 0xFFFFFF00);
 
@@ -81,6 +89,15 @@ int main(void) {
     int height = 600;
     int FPS = 30;
     bool is_running = true;
+
+    ObjMeshInit(&obj_mesh);
+    load_mesh(&obj_mesh, "assets/f22.obj");
+
+    {
+        ARRAY_CREATE(Triangle, arr);
+        triangles_to_render = arr;
+        ARRAY_RESERVE(triangles_to_render, obj_mesh.nr_faces);
+    }
 
     Display *display = CreateDisplay(width, height, true, true, FPS);
     if(!display) {
@@ -108,4 +125,6 @@ int main(void) {
 
     DestroyColorBuffer(color_buffer);
     DestroyDisplay(display);
+    ObjMeshDestroy(&obj_mesh);
+    ARRAY_DESTROY(triangles_to_render);
 }

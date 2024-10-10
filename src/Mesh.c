@@ -1,43 +1,7 @@
 #include "Mesh.h"
 #include "my_getline.h"
 #include "array.h"
-//#include "Vector.h"
-//#include "Face.h"
 #include <stdlib.h>
-//#include <stdbool.h>
-
-
-Vec3 mesh_vertices[N_MESH_VERTICES] = {
-    { .x = -1, .y = -1, .z = -1 }, // 1
-    { .x = -1, .y =  1, .z = -1 }, // 2
-    { .x =  1, .y =  1, .z = -1 }, // 3
-    { .x =  1, .y = -1, .z = -1 }, // 4
-    { .x =  1, .y =  1, .z =  1 }, // 5
-    { .x =  1, .y = -1, .z =  1 }, // 6
-    { .x = -1, .y =  1, .z =  1 }, // 7
-    { .x = -1, .y = -1, .z =  1 }  // 8
-};
-
-Face mesh_faces[N_MESH_FACES] = {
-    // front
-    { .a = 1, .b = 2, .c = 3 },
-    { .a = 1, .b = 3, .c = 4 },
-    // right
-    { .a = 4, .b = 3, .c = 5 },
-    { .a = 4, .b = 5, .c = 6 },
-    // back
-    { .a = 6, .b = 5, .c = 7 },
-    { .a = 6, .b = 7, .c = 8 },
-    // left
-    { .a = 8, .b = 7, .c = 2 },
-    { .a = 8, .b = 2, .c = 1 },
-    // top
-    { .a = 2, .b = 7, .c = 5 },
-    { .a = 2, .b = 5, .c = 3 },
-    // bottom
-    { .a = 6, .b = 8, .c = 1 },
-    { .a = 6, .b = 1, .c = 4 }
-};
 
 void ObjMeshInit(ObjMesh *mesh) {
     ARRAY_CREATE(Vec3, arr);
@@ -51,9 +15,14 @@ void ObjMeshInit(ObjMesh *mesh) {
 
     mesh->has_normals = false;
     mesh->has_textures = false;
+    mesh->was_init = true;
+    mesh->nr_vertices = 0;
+    mesh->nr_faces = 0;
 }
 
 void ObjMeshDestroy(ObjMesh *mesh) {
+    if(!mesh->was_init) return;
+
     ARRAY_DESTROY(mesh->vertices);
     ARRAY_DESTROY(mesh->faces);
     ARRAY_DESTROY(mesh->textures);
@@ -146,6 +115,11 @@ void parse_line(ObjMesh *mesh, char *line) {
 }
 
 void load_mesh(ObjMesh *mesh, const char *fpath) {
+    if(mesh->was_init == false) {
+        fprintf(stderr, "Error! ObjMesh was not intialized - we abort the loading sequence!\n");
+        return;
+    }
+
     FILE *fp = fopen(fpath, "r");
     if(fp == NULL) {
         fprintf(stderr, "Unable to open file %s\n", fpath);
@@ -161,4 +135,7 @@ void load_mesh(ObjMesh *mesh, const char *fpath) {
 
     fclose(fp);
     free(line);
+
+    mesh->nr_vertices = ARRAY_SIZE(mesh->vertices);
+    mesh->nr_faces = ARRAY_SIZE(mesh->faces);
 }
