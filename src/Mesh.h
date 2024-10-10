@@ -1,6 +1,6 @@
 #pragma once
 #include "Vector.h"
-#include "Triangle.h"
+#include "Face.h"
 
 #define N_MESH_VERTICES 8
 extern Vec3 mesh_vertices[N_MESH_VERTICES];
