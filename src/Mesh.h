@@ -7,6 +7,8 @@
 
 typedef struct {
     Vec3 *vertices;
+    Vec2 *vtextures;
+    Vec3 *vnormals;
     Face *faces_indices;
     Face *textures_indices;
     Face *normals_indices;

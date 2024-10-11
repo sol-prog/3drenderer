@@ -135,5 +135,6 @@ void DestroyDisplay(Display *display) {
         if(display->renderer) SDL_DestroyRenderer(display->renderer);
         if(display->window) SDL_DestroyWindow(display->window);
         SDL_Quit();
+        free(display);
     }
 }

@@ -12,6 +12,11 @@ void ObjMeshInit(ObjMesh *mesh) {
     mesh->textures_indices = arr3;
     ARRAY_CREATE(Face, arr4);
     mesh->normals_indices = arr4;
+    ARRAY_CREATE(Vec2, arr5);
+    mesh->vtextures = arr5;
+    ARRAY_CREATE(Vec3, arr6);
+    mesh->vnormals = arr6;
+
 
     mesh->has_normals = false;
     mesh->has_textures = false;
@@ -27,6 +32,8 @@ void ObjMeshDestroy(ObjMesh *mesh) {
     ARRAY_DESTROY(mesh->faces_indices);
     ARRAY_DESTROY(mesh->textures_indices);
     ARRAY_DESTROY(mesh->normals_indices);
+    ARRAY_DESTROY(mesh->vtextures);
+    ARRAY_DESTROY(mesh->vnormals);
 }
 
 void parse_v_line(ObjMesh *mesh, char *line) {
@@ -34,6 +41,19 @@ void parse_v_line(ObjMesh *mesh, char *line) {
     sscanf(line, "%f%f%f", &x, &y, &z);
     ARRAY_PUSH(mesh->vertices, ((Vec3){x, y, z}));
 }
+
+void parse_vn_line(ObjMesh *mesh, char *line) {
+    float nx, ny, nz;
+    sscanf(line, "%f%f%f", &nx, &ny, &nz);
+    ARRAY_PUSH(mesh->vnormals, ((Vec3){nx, ny, nz}));
+}
+
+void parse_vt_line(ObjMesh *mesh, char *line) {
+    float tx, ty;
+    sscanf(line, "%f%f", &tx, &ty);
+    ARRAY_PUSH(mesh->vtextures, ((Vec2){tx, ty}));
+}
+
 
 void parse_f_line(ObjMesh *mesh, char *line) {
     //printf("%s", line);
@@ -106,8 +126,10 @@ void parse_line(ObjMesh *mesh, char *line) {
             parse_v_line(mesh, line + 2);
         } else if(line[0] == 'v' && line[1] == 't') {
             if(!mesh->has_textures) mesh->has_textures = true;
+            parse_vt_line(mesh, line + 2);
         } else if(line[0] == 'v' && line[1] == 'n') {
             if(!mesh->has_normals) mesh->has_normals = true;
+            parse_vn_line(mesh, line + 2);
         } else if(line[0] == 'f' && line[1] == ' ') {
             parse_f_line(mesh, line + 2);
         }
