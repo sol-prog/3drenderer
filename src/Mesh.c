@@ -7,11 +7,11 @@ void ObjMeshInit(ObjMesh *mesh) {
     ARRAY_CREATE(Vec3, arr);
     mesh->vertices = arr;
     ARRAY_CREATE(Face, arr2);
-    mesh->faces = arr2;
+    mesh->faces_indices = arr2;
     ARRAY_CREATE(Face, arr3);
-    mesh->textures = arr3;
+    mesh->textures_indices = arr3;
     ARRAY_CREATE(Face, arr4);
-    mesh->normals = arr4;
+    mesh->normals_indices = arr4;
 
     mesh->has_normals = false;
     mesh->has_textures = false;
@@ -24,9 +24,9 @@ void ObjMeshDestroy(ObjMesh *mesh) {
     if(!mesh->was_init) return;
 
     ARRAY_DESTROY(mesh->vertices);
-    ARRAY_DESTROY(mesh->faces);
-    ARRAY_DESTROY(mesh->textures);
-    ARRAY_DESTROY(mesh->normals);
+    ARRAY_DESTROY(mesh->faces_indices);
+    ARRAY_DESTROY(mesh->textures_indices);
+    ARRAY_DESTROY(mesh->normals_indices);
 }
 
 void parse_v_line(ObjMesh *mesh, char *line) {
@@ -93,9 +93,9 @@ void parse_f_line(ObjMesh *mesh, char *line) {
     if(count != total) {
         fprintf(stderr, "Error! I can parse only triangles!\n");
     } else {
-        if(fi_indx == 3) ARRAY_PUSH(mesh->faces, ((Face){fi[0], fi[1], fi[2]}));
-        if(ti_indx == 3) ARRAY_PUSH(mesh->textures, ((Face){ti[0], ti[1], ti[2]}));
-        if(ni_indx == 3) ARRAY_PUSH(mesh->normals, ((Face){ni[0], ni[1], ni[2]}));
+        if(fi_indx == 3) ARRAY_PUSH(mesh->faces_indices, ((Face){fi[0], fi[1], fi[2]}));
+        if(ti_indx == 3) ARRAY_PUSH(mesh->textures_indices, ((Face){ti[0], ti[1], ti[2]}));
+        if(ni_indx == 3) ARRAY_PUSH(mesh->normals_indices, ((Face){ni[0], ni[1], ni[2]}));
     }
 }
 
@@ -137,5 +137,5 @@ void load_mesh(ObjMesh *mesh, const char *fpath) {
     free(line);
 
     mesh->nr_vertices = ARRAY_SIZE(mesh->vertices);
-    mesh->nr_faces = ARRAY_SIZE(mesh->faces);
+    mesh->nr_faces = ARRAY_SIZE(mesh->faces_indices);
 }

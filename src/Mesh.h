@@ -7,9 +7,9 @@
 
 typedef struct {
     Vec3 *vertices;
-    Face *faces;
-    Face *textures;
-    Face *normals;
+    Face *faces_indices;
+    Face *textures_indices;
+    Face *normals_indices;
     bool has_normals;
     bool has_textures;
     bool was_init;

@@ -37,7 +37,7 @@ void update(Display *display, ColorBuffer *color_buffer) {
     obj_mesh_rotation.z += 0.01;
 
     for(size_t i = 0; i < obj_mesh.nr_faces; ++i) {
-        Face mesh_face = obj_mesh.faces[i];
+        Face mesh_face = obj_mesh.faces_indices[i];
         Vec3 face_vertices[3];
         face_vertices[0] = obj_mesh.vertices[mesh_face.a - 1];
         face_vertices[1] = obj_mesh.vertices[mesh_face.b - 1];
