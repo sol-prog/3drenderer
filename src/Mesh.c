@@ -161,3 +161,11 @@ void load_mesh(ObjMesh *mesh, const char *fpath) {
     mesh->nr_vertices = ARRAY_SIZE(mesh->vertices);
     mesh->nr_faces = ARRAY_SIZE(mesh->faces_indices);
 }
+
+// // gcc -std=c17 -Wall -Wextra -pedantic -g -fsanitize=address,undefined Mesh.c
+// int main(void) {
+//     ObjMesh mesh;
+//     ObjMeshInit(&mesh);
+//     load_mesh(&mesh, "../assets/f22.obj");
+//     ObjMeshDestroy(&mesh);
+// }
