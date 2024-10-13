@@ -162,10 +162,36 @@ void load_mesh(ObjMesh *mesh, const char *fpath) {
     mesh->nr_faces = ARRAY_SIZE(mesh->faces_indices);
 }
 
-// // gcc -std=c17 -Wall -Wextra -pedantic -g -fsanitize=address,undefined Mesh.c
-// int main(void) {
-//     ObjMesh mesh;
-//     ObjMeshInit(&mesh);
-//     load_mesh(&mesh, "../assets/f22.obj");
-//     ObjMeshDestroy(&mesh);
-// }
+/*
+// gcc -std=c17 -Wall -Wextra -pedantic -g -fsanitize=address,undefined my_getline.c Vector.c Mesh.c -lm
+int main(void) {
+    ObjMesh mesh;
+    ObjMeshInit(&mesh);
+    load_mesh(&mesh, "../assets/cube.obj");
+    Vec3 camera_pos = {0, 0, -5};
+
+    for(size_t i = 0; i < mesh.nr_faces; ++i) {
+        printf("Face %zd\n", i + 1);
+        printf("A = %d\n", mesh.faces_indices[i].a);
+        printf("B = %d\n", mesh.faces_indices[i].b);
+        printf("C = %d\n", mesh.faces_indices[i].c);
+        
+        Vec3 ptA = mesh.vertices[mesh.faces_indices[i].a - 1];
+        Vec3 ptB = mesh.vertices[mesh.faces_indices[i].b - 1];
+        Vec3 ptC = mesh.vertices[mesh.faces_indices[i].c - 1];
+        
+        // Calculate the normal vector N
+        Vec3 AB = vec3_sub(ptB, ptA);
+        Vec3 AC = vec3_sub(ptC, ptA);
+        Vec3 N = vec3_cross(AB, AC);
+        printf("Nx = %f, Ny = %f, Nz = %f\n", N.x, N.y, N.z);
+        
+        Vec3 AO = vec3_sub(camera_pos, ptA);
+
+        float AO_N = vec3_dot(AO, N);
+        printf("dot prod = %f\n", AO_N);
+        puts("");
+    }
+    ObjMeshDestroy(&mesh);
+}
+*/
