@@ -21,6 +21,10 @@ float vec2_dot(Vec2 a, Vec2 b) {
     return a.x * b.x + a.y * b.y;
 }
 
+Vec2 vec2_normalize(Vec2 v) {
+    return vec2_mul(v, vec2_length(v));
+}
+
 float vec3_length(Vec3 v) {
     return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 }
@@ -49,6 +53,9 @@ float vec3_dot(Vec3 a, Vec3 b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+Vec3 vec3_normalize(Vec3 v) {
+    return vec3_mul(v, vec3_length(v));
+}
 
 Vec3 vec3_rotate_x(Vec3 v, float alpha){
     Vec3 vp = {

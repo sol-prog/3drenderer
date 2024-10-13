@@ -68,9 +68,11 @@ void update(Display *display, ColorBuffer *color_buffer) {
         Vec3 AB = vec3_sub(ptB, ptA);
         Vec3 AC = vec3_sub(ptC, ptA);
         Vec3 N = vec3_cross(AB, AC);
+        N = vec3_normalize(N);
         
         // A "ray" from the normal to the camera position
         Vec3 AO = vec3_sub(camera_pos, ptA);
+        AO = vec3_normalize(AO);
 
         // dot prod between the ray and the normal
         if(vec3_dot(AO, N) < 0) {
