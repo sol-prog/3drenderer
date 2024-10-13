@@ -15,9 +15,10 @@
 
 ObjMesh obj_mesh;
 Triangle *triangles_to_render;
+size_t no_visible_faces;
 
 const float FOV_FACT = 640;
-Vec3 camera_pos = {0, 0, -5};
+Vec3 camera_pos = {0, 0, 0};
 Vec3 obj_mesh_rotation = {M_PI, 0, 0};
 
 
@@ -36,6 +37,7 @@ void update(Display *display, ColorBuffer *color_buffer) {
     obj_mesh_rotation.y += 0.01;
     obj_mesh_rotation.z += 0.01;
 
+    no_visible_faces = 0;
     for(size_t i = 0; i < obj_mesh.nr_faces; ++i) {
         Face mesh_face = obj_mesh.faces_indices[i];
         Vec3 face_vertices[3];
@@ -43,6 +45,7 @@ void update(Display *display, ColorBuffer *color_buffer) {
         face_vertices[1] = obj_mesh.vertices[mesh_face.b - 1];
         face_vertices[2] = obj_mesh.vertices[mesh_face.c - 1];
 
+        Vec3 transformed_vertices[3];
         for(int j = 0; j < 3; ++j) {
             Vec3 transformed_vertex = face_vertices[j];
             transformed_vertex = vec3_rotate_x(transformed_vertex, obj_mesh_rotation.x);
@@ -50,23 +53,49 @@ void update(Display *display, ColorBuffer *color_buffer) {
             transformed_vertex = vec3_rotate_z(transformed_vertex, obj_mesh_rotation.z);
 
             // Translate the vertex away from the camera
-            transformed_vertex.z -= camera_pos.z;
+            transformed_vertex.z = 5;
 
+            // Save the transformed vertices
+            transformed_vertices[j] = transformed_vertex;
+        }
+
+        // Check face culling
+        Vec3 ptA = transformed_vertices[0];
+        Vec3 ptB = transformed_vertices[1];
+        Vec3 ptC = transformed_vertices[2];
+        
+        // Calculate the normal vector N
+        Vec3 AB = vec3_sub(ptB, ptA);
+        Vec3 AC = vec3_sub(ptC, ptA);
+        Vec3 N = vec3_cross(AB, AC);
+        
+        // A "ray" from the normal to the camera position
+        Vec3 AO = vec3_sub(camera_pos, ptA);
+
+        // dot prod between the ray and the normal
+        if(vec3_dot(AO, N) < 0) {
+            // we cull the face ...
+            continue;
+        }
+
+        for(int j = 0; j < 3; ++j) {
             // Projection
-            Vec2 projected_vertex = project(&transformed_vertex, FOV_FACT);
+            Vec2 projected_vertex = project(&transformed_vertices[j], FOV_FACT);
 
             // Scale, translate projected points to middle of screen
             projected_vertex.x += + 0.5 * color_buffer->width;
             projected_vertex.y += + 0.5 * color_buffer->height;
 
-            triangles_to_render[i].points[j] = projected_vertex;
+            triangles_to_render[no_visible_faces].points[j] = projected_vertex;
         }
+
+        no_visible_faces++;
     }
 }
 
 void draw(ColorBuffer *color_buffer) {
     ClearColorBuffer(color_buffer, 0xFF000000);
-    for(size_t i = 0; i < obj_mesh.nr_faces; ++i) {
+    for(size_t i = 0; i < no_visible_faces; ++i) {
         // Draw face
         draw_triangle(color_buffer, triangles_to_render[i], 0xFFFFFF00);
 
