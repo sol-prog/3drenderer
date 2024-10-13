@@ -9,6 +9,7 @@ float vec2_length(Vec2 v);
 Vec2 vec2_add(Vec2 a, Vec2 b);
 Vec2 vec2_sub(Vec2 a, Vec2 b);
 Vec2 vec2_mul(Vec2 a, float factor);
+float vec2_dot(Vec2 a, Vec2 b);
 
 typedef struct {
     float x;
@@ -20,6 +21,8 @@ float vec3_length(Vec3 v);
 Vec3 vec3_add(Vec3 a, Vec3 b);
 Vec3 vec3_sub(Vec3 a, Vec3 b);
 Vec3 vec3_mul(Vec3 a, float factor);
+Vec3 vec3_cross(Vec3 a, Vec3 b);
+float vec3_dot(Vec3 a, Vec3 b);
 
 Vec3 vec3_rotate_x(Vec3 v, float alpha);
 Vec3 vec3_rotate_y(Vec3 v, float alpha);
